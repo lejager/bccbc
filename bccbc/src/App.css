@@ -1,5 +1,20 @@
 .App {
-  text-align: center;
+  
+}
+
+li {
+ list-style: none;
+ padding-top: 10px;
+ padding-bottom: 10px;
+ border-bottom: solid 1px #e1e1e1;
+}
+
+span {
+  margin-left: 10px;
+}
+
+span:first-child {
+  margin-left: 0;
 }
 
 .App-logo {
@@ -9,9 +24,17 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 80px;
   padding: 20px;
   color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.item-list {
+  margin-top: 80px;
 }
 
 .App-intro {
