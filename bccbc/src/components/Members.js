@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Router, Route, Link, browserHistory } from 'react-router';
+import { browserHistory } from 'react-router';
 import members from './memberlist';
 import Member from './Member';
 
@@ -10,7 +10,7 @@ class Members extends Component {
 
   handleChange(e) {
     let member = e.target.value;
-    browserHistory.push('/' + member);
+    browserHistory.push('/user/' + member);
   }
 
   render() {
