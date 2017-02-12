@@ -8,26 +8,7 @@ class Item extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  // handleChange(e, key) {
-  // 	let details = this.props.details;
-  //   let member = this.props.member;
-  //   let item = details.Item;
-
-  //   let orderUpdate = {
-  //   	item : item,
-  //   	quantity : event.target.value,
-  //   	price : details.PricePer
-  //   }
-
-  //   this.props.addToOrder(member,item,orderUpdate)
-  // }
-
   handleChange(e, key) {
-    // const order = this.props.order[key];
-    // const updatedOrder = {
-    //   ...order,
-    //   [key]: e.target.value
-    // }
     const updatedOrder = e.target.value;
     this.props.addToOrder(key, updatedOrder);
   }
@@ -40,11 +21,9 @@ class Item extends Component {
     return (
       <li key={this.props.i}>
       	<div className="item-info">
+          <span className="case-info">Order {isNaN(details.toCompleteCase) ? details.Quantity : details.toCompleteCase} to complete the case</span>
     	  	<h3 className="item-name">{details.Description} <span className="item-size">{details.Size} for ${price.toFixed(2)}</span></h3>
     	  </div>
-    	  <div className="item-to-complete">
-    	 		<span>{details.Quantity - 24}</span>
-    	 	</div>
     	  <div className="item-order">
     	  	<input type="number" step="1" min="0" ref="order" placeholder="0" onChange={(e) => this.handleChange(e, key)} />
     	  </div>

@@ -47,6 +47,7 @@ li div {
   vertical-align: middle;
   line-height: 60px;
   font-size: 22px;
+  margin-right: 10px;
 }
 
 span {
@@ -94,4 +95,45 @@ span:first-child {
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+button.addNew {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.newItemsWrapper {
+  z-index: 2;
+  background: rgba(0,0,0,0.7);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.newItemsWrapper.hidden {
+  display: none;
+}
+
+.newItems {
+  z-index: 3;
+  background: #fff;
+  width: 90%;
+  max-width: 800px;
+  height: 90%;
+  margin: 40px auto;
+  padding: 0 40px 0 0px;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.newItems .close {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

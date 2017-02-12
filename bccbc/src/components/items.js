@@ -4,7 +4,8 @@ module.exports = {
       "Size": "72CT",
       "Origin": "CAN",
       "Price": "72.95",
-      "Vendor": "BRIDGES PRODUCE,  INC."
+      "Vendor": "BRIDGES PRODUCE,  INC.",
+      "Listed" : true
     },
      "30011": {
       "Description": "APPLE,  AMBROSIA ORG",
