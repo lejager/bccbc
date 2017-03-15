@@ -14,10 +14,11 @@ class Item extends Component {
   }
 
   render() {
-  	let details = this.props.details;
-  	let pricePer = +details.PricePer;
-  	let price = +details.Price;
-    let key = this.props.index;
+  	const details = this.props.details;
+  	const pricePer = +details.PricePer;
+  	const price = +details.Price;
+    const key = this.props.index;
+    const order = this.props.order[key] || 0;
     return (
       <li key={this.props.i}>
       	<div className="item-info">
@@ -25,7 +26,7 @@ class Item extends Component {
     	  	<h3 className="item-name">{details.Description} <span className="item-size">{details.Size} for ${price.toFixed(2)}</span></h3>
     	  </div>
     	  <div className="item-order">
-    	  	<input type="number" step="1" min="0" ref="order" placeholder="0" onChange={(e) => this.handleChange(e, key)} />
+    	  	<input type="number" defaultValue={order} step="1" min="0" ref="order" placeholder="0" onChange={(e) => this.handleChange(e, key)} />
     	  </div>
     	  <div className="item-price">
     	  <span className="item-price-per">${pricePer.toFixed(2)}</span>

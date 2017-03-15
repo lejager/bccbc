@@ -1,55 +1,56 @@
 import React, { Component } from 'react';
 import './App.css';
-import Member from './components/Member';
+import { browserHistory } from 'react-router';
 import Item from './components/Item';
 import NewItem from './components/NewItem';
-import helper from './components/helper';
+import Cart from './components/Cart';
 import base from './base';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    let items = require('./components/items');
-    items = helper.quantify(items);
+
     this.state = {
+      uid : null,
       member : '',
-      total : 0,
       items : {},
-      order : {},
-      overlay : false
+      orders : {
+        total: 0,
+        items: {}
+      },
+      overlay : false,
+      shoppingCart: false
     };
 
     this.addToOrder = this.addToOrder.bind(this);
     this.renderItems = this.renderItems.bind(this);
-    this.loadItems = this.loadItems.bind(this);
     this.renderNewItems = this.renderNewItems.bind(this);
     this.addToItems = this.addToItems.bind(this);
-    this.isListed = this.isListed.bind(this);
-    this.isNotListed = this.isNotListed.bind(this);
     this.addNewItems = this.addNewItems.bind(this);
+    this.viewCart = this.viewCart.bind(this);
     this.closeWindow = this.closeWindow.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentWillMount() {
-    this.setState({
-      // route components are rendered with useful information, like URL params
-      member: this.props.params.member
-    })
-    this.items = base.syncState(`items`
-      , {
-        context: this,
-        state: 'items'
-      });
-
-    this.orders = base.syncState(`orders/${this.props.params.member}`
-      , {
-        context: this,
-        state: 'order'
-      });
-
-    let items = require('./components/items');
-    items = helper.quantify(items);
-    this.setState({ items });
+    // check if user is logged in
+    base.onAuth((user) => {
+      if(user) {
+        this.authHandler(null, { user });
+        this.orders = base.syncState(`orders/${user.uid}`
+          , {
+            context: this,
+            state: 'orders'
+          });
+          this.items = base.syncState(`items`
+            , {
+              context: this,
+              state: 'items'
+            });
+      } else {
+        browserHistory.push('/login');
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -57,14 +58,21 @@ class App extends Component {
     base.removeBinding(this.orders);
   }
 
-  componentDidMount() {
-    
+  authHandler(err, authData)  {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    this.setState({
+      uid : authData.user.uid,
+      member : authData.user.displayName
+    })
   }
 
-  loadItems() {
-    let items = require('./components/items');
-    items = helper.quantify(items);
-    this.setState({ items });
+  logout() {
+    base.unauth();
+    this.setState({ uid: null });
   }
 
   addToItems(item) {
@@ -75,86 +83,91 @@ class App extends Component {
 
 
   addToOrder(item, updatedOrder) {
-    const order = {...this.state.order}
+    const orders = {...this.state.orders}
+    const orderedItems = orders.items || {};
     const items = {...this.state.items}
     let itemQuantity = items[item].Quantity;
     let totalOrdered = items[item].TotalOrdered;
-    let total = this.state.total;
+    let total = orders.total || 0;
 
     // set order
-    let prevOrder = order[item] || 0;
+    let prevOrder = orderedItems[item] || 0;
     let orderDiff = updatedOrder - prevOrder;
     let priceDiff = orderDiff * items[item].PricePer;
-    order[item] = +prevOrder + orderDiff;
+    orderedItems[item] = +prevOrder + orderDiff;
     items[item].TotalOrdered = totalOrdered + orderDiff;
     items[item].toCompleteCase = itemQuantity - items[item].TotalOrdered; // subtract order from total;
-    total = total += +priceDiff;
-    this.setState({ items, order, total });
+    orders.total = total += +priceDiff;
+    orders.items = orderedItems;
+    this.setState({ items, orders });
   }
 
   renderItems(key) {
     const items = this.state.items;
+    const orders = this.state.orders.items || {};
     return (
-      <Item 
-      order={this.state.order}
-      details={items[key]} 
-      key={key} 
-      index={key} 
-      addToOrder={this.addToOrder} />
+      <Item
+        order="1"
+        details={items[key]}
+        key={key}
+        index={key}
+        addToOrder={this.addToOrder}
+      />
     );
   }
 
   renderNewItems(key) {
     const items = this.state.items;
     return (
-      <NewItem 
-      details={items[key]}
-      key={key}
-      index={key}
-      addToItems ={this.addToItems}
+      <NewItem
+        details={items[key]}
+        key={key}
+        index={key}
+        addToItems ={this.addToItems}
       />
     );
   }
 
-  isListed(key) {
-    const items = this.state.items;
-    if (items[key].Listed) {
-      return true;
-    }
-  }
-
-  isNotListed(key) {
-    const items = this.state.items;
-    if(items[key].Listed) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   addNewItems() {
-    let overlay = this.state.overlay ? false : true;
+    const overlay = this.state.overlay ? false : true;
     this.setState({ overlay });
   }
 
+  viewCart() {
+    const shoppingCart = this.state.shoppingCart ? false : true;
+    this.setState({ shoppingCart });
+  }
+
   closeWindow() {
-    this.setState({ overlay : false })
+    this.setState({
+      overlay : false,
+      shoppingCart : false,
+    });
   }
 
   render() {
     let member = this.state.member;
-    let total = +this.state.total;
     const items = this.state.items;
+    const orders = this.state.orders;
+    const total = orders.total || 0;
     const overlay = this.state.overlay ? 'shown' : 'hidden';
+    const shoppingCart = this.state.shoppingCart ? 'shown' : 'hidden';
 
     return (
-      <div className="App">
+      <div className="App Store">
         <div className="App-header">
-          <h2>Hi {member}<span className="total">Your Total: ${total.toFixed(2)}</span></h2>
+          <h2>{member ? `Hi ${member}` : 'Hi There'}
+            <span className="add-items">
+              <a href="#" onClick={this.addNewItems}>Search for More Items</a>
+            </span>
+            <span className="total">Your Total: ${total.toFixed(2)}</span>
+            <span className="view-cart"><a href="#" onClick={this.viewCart}>View Cart</a></span>
+          </h2>
+          <button onClick={this.logout}>Log Out</button>
         </div>
         <div className="item-list">
           <ul className="items">
-            {Object.keys(items).filter(this.isListed).map(this.renderItems)}
+            {Object.keys(items).filter((key) => items[key].Listed).map(this.renderItems)}
           </ul>
         </div>
         <button className="addNew" onClick={this.addNewItems}>Search For More Items</button>
@@ -168,11 +181,12 @@ class App extends Component {
             </div>
             <div className="item-list">
               <ul className="items">
-                {Object.keys(items).filter(this.isNotListed).map(this.renderNewItems)}
+                {Object.keys(items).filter((key) => !items[key].Listed).map(this.renderNewItems)}
               </ul>
             </div>
           </div>
         </div>
+        <Cart items={items} order={orders} cart={shoppingCart} />
       </div>
     );
   }
