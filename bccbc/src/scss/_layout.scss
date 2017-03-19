@@ -1,0 +1,50 @@
+.l--constrained {
+  max-width: $w-content;
+  margin: 0 auto;
+}
+
+.app.overlay {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.overlay-wrapper {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: $overlay-background;
+  transform: translateX(0);
+  opacity: 1;
+  max-height: 100vh;
+  transition: opacity .2s ease-in-out;
+  overflow-y: scroll;
+
+  &.hidden {
+    // transform: translateY(-100%);
+    opacity: 0;
+    max-height: 0;
+    .overlay {
+      transform: translateX(-150%);
+    }
+  }
+
+  .overlay {
+    position: relative;
+    margin-top: 100px;
+    margin-bottom: 40px;
+    width: 90%;
+    background-color: $white;
+    padding: 0 $pad-2;
+    min-height: 80%;
+    transform: translateX(0);
+    transition: all .2s ease-in-out .1s;
+  }
+
+  .button--close {
+    position: absolute;
+    top: 0;
+    right: $pad-2;
+  }
+}

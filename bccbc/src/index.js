@@ -8,7 +8,7 @@ import Cart from './components/Cart';
 import NoMatch from './components/NoMatch';
 
 ReactDOM.render((
-	<Router history={browserHistory}>
+	<Router history={browserHistory} basename="/bccbc/">
     <Route path="/" component={App} />
     <Route path="/user/:member" component={App}/>
     <Route path="/cart" component={Cart}/>

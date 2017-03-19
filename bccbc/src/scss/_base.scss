@@ -1,0 +1,42 @@
+button {
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+}
+
+.button--highlight {
+  button {
+    background: $yellow;
+    box-shadow: 0 3px 0 0 #CF9608;
+    border: none;
+  }
+}
+
+.button--subtle {
+  button {
+    border: solid 1px $overlay-background;
+    box-shadow: 0 3px $overlay-background;
+    background: $white;
+    padding: 11px;
+    margin-top: 1px;
+  }
+}
+
+.login button {
+  width: 100%;
+  font-size: 16px;
+}
+
+.close {
+  color: $white;
+}
+
+button:hover {
+  opacity: .9;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}

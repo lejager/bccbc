@@ -1,0 +1,53 @@
+.app-header {
+  background-color: $background;
+  padding: $pad-1 $pad-2;
+  color: $white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+
+  h2 {
+    margin: 0.5em 0;
+  }
+
+  a {
+    color: $gray-background;
+    text-decoration: none;
+
+    &.active {
+      color: $gray-background;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.topbar--item {
+  float: right;
+  margin-left: 5px;
+
+  &:first-child {
+    float: none;
+    margin-left: 0;
+  }
+}
+
+.total {
+  float: right;
+}
+
+.cart {
+  float: right;
+  margin-left: 10px;
+  cursor: pointer;
+  color: $yellow;
+
+  &:hover {
+    opacity: 0.9;
+    color: $yellow;
+  }
+}

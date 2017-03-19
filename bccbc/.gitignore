@@ -9,6 +9,9 @@ coverage
 # production
 build
 
+#compiled css in src
+src/**/*.css
+
 # misc
 .DS_Store
 .env

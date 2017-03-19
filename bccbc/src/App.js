@@ -4,6 +4,10 @@ import { browserHistory } from 'react-router';
 import Item from './components/Item';
 import NewItem from './components/NewItem';
 import Cart from './components/Cart';
+import CartItem from './components/CartItem';
+import Header from './components/Header';
+import ItemList from './components/ItemList';
+import NewItemsList from './components/NewItemsList';
 import base from './base';
 
 class App extends Component {
@@ -18,13 +22,15 @@ class App extends Component {
         total: 0,
         items: {}
       },
-      overlay : false,
+      moreItems : false,
       shoppingCart: false
     };
 
     this.addToOrder = this.addToOrder.bind(this);
+    this.removeFromOrder = this.removeFromOrder.bind(this);
     this.renderItems = this.renderItems.bind(this);
     this.renderNewItems = this.renderNewItems.bind(this);
+    this.renderCartItems = this.renderCartItems.bind(this);
     this.addToItems = this.addToItems.bind(this);
     this.addNewItems = this.addNewItems.bind(this);
     this.viewCart = this.viewCart.bind(this);
@@ -102,16 +108,52 @@ class App extends Component {
     this.setState({ items, orders });
   }
 
+  removeFromOrder(item, updatedOrder) {
+    const orders = {...this.state.orders}
+    const orderedItems = orders.items || {};
+    const items = {...this.state.items}
+    let itemQuantity = items[item].Quantity;
+    let totalOrdered = items[item].TotalOrdered;
+    let total = orders.total || 0;
+
+    // set order
+    let prevOrder = orderedItems[item] || 0;
+    let orderDiff = updatedOrder - prevOrder;
+    let priceDiff = orderDiff * items[item].PricePer;
+    orderedItems[item] = +prevOrder + orderDiff;
+    items[item].TotalOrdered = totalOrdered + orderDiff;
+    items[item].toCompleteCase = itemQuantity - items[item].TotalOrdered; // subtract order from total;
+    orders.total = total += +priceDiff;
+    orderedItems[item] = null;
+    orders.items = orderedItems;
+    this.setState({ items, orders });
+  }
+
   renderItems(key) {
     const items = this.state.items;
     const orders = this.state.orders.items || {};
     return (
       <Item
-        order="1"
+        order={orders}
         details={items[key]}
         key={key}
         index={key}
         addToOrder={this.addToOrder}
+      />
+    );
+  }
+
+  renderCartItems(key) {
+    const items = this.state.items;
+    const orders = this.state.orders.items || {};
+    return (
+      <CartItem
+        order={orders}
+        details={items[key]}
+        key={key}
+        index={key}
+        addToOrder={this.addToOrder}
+        removeFromOrder={this.removeFromOrder}
       />
     );
   }
@@ -129,64 +171,61 @@ class App extends Component {
   }
 
   addNewItems() {
-    const overlay = this.state.overlay ? false : true;
-    this.setState({ overlay });
+    const moreItems = this.state.moreItems ? false : true;
+    let shoppingCart = this.state.shoppingCart;
+    if (moreItems) { shoppingCart = false };
+    this.setState({ moreItems , shoppingCart });
   }
 
   viewCart() {
     const shoppingCart = this.state.shoppingCart ? false : true;
-    this.setState({ shoppingCart });
+    let moreItems = this.state.moreItems;
+    if (shoppingCart) { moreItems = false };
+    this.setState({ shoppingCart , moreItems });
   }
 
   closeWindow() {
     this.setState({
-      overlay : false,
+      moreItems : false,
       shoppingCart : false,
     });
   }
 
   render() {
-    let member = this.state.member;
+    const member = this.state.member;
     const items = this.state.items;
     const orders = this.state.orders;
     const total = orders.total || 0;
-    const overlay = this.state.overlay ? 'shown' : 'hidden';
+    const moreItems = this.state.moreItems ? 'shown' : 'hidden';
     const shoppingCart = this.state.shoppingCart ? 'shown' : 'hidden';
+    let overlay = 'no-overlay';
+    if (this.state.moreItems || this.state.shoppingCart) {
+      overlay = 'overlay';
+    }
 
     return (
-      <div className="App Store">
-        <div className="App-header">
-          <h2>{member ? `Hi ${member}` : 'Hi There'}
-            <span className="add-items">
-              <a href="#" onClick={this.addNewItems}>Search for More Items</a>
-            </span>
-            <span className="total">Your Total: ${total.toFixed(2)}</span>
-            <span className="view-cart"><a href="#" onClick={this.viewCart}>View Cart</a></span>
-          </h2>
-          <button onClick={this.logout}>Log Out</button>
-        </div>
-        <div className="item-list">
-          <ul className="items">
-            {Object.keys(items).filter((key) => items[key].Listed).map(this.renderItems)}
-          </ul>
-        </div>
-        <button className="addNew" onClick={this.addNewItems}>Search For More Items</button>
-        <div className={"newItemsWrapper " + overlay}>
-          <div className="newItemsClose">
-            <button className="close" onClick={this.closeWindow}>x</button>
-          </div>
-          <div className="newItems">
-            <div className="itemsHeader">
-              <h2>Select New Items to Add</h2>
-            </div>
-            <div className="item-list">
-              <ul className="items">
-                {Object.keys(items).filter((key) => !items[key].Listed).map(this.renderNewItems)}
-              </ul>
-            </div>
-          </div>
-        </div>
-        <Cart items={items} order={orders} cart={shoppingCart} />
+      <div className={'app ' + overlay}>
+        <Header
+          member={member}
+          total={total}
+          addNewItems={this.addNewItems}
+          logout={this.logout}
+          viewCart={this.viewCart}
+        />
+        <ItemList items={items} renderItems={this.renderItems} />
+        <NewItemsList
+          items={items}
+          renderNewItems={this.renderNewItems}
+          overlay={moreItems}
+          closeWindow={this.closeWindow}
+        />
+        <Cart
+          items={items}
+          order={orders}
+          cart={shoppingCart}
+          renderCartItems={this.renderCartItems}
+          closeWindow={this.closeWindow}
+        />
       </div>
     );
   }

@@ -20,7 +20,7 @@ class NewItem extends Component {
       	<div className="item-info">
           <h3 className="item-name">{details.Description} <span className="item-size">{details.Size} for ${price.toFixed(2)}</span></h3>
     	  </div>
-    	  <div className="item-order">
+    	  <div className="item-order button--subtle">
     	  	<button onClick={() => this.handleClick(key)}>Add to List</button>
     	  </div>
     	  <div className="item-price">

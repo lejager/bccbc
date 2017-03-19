@@ -119,7 +119,9 @@ class Members extends Component {
         <form ref="login" onSubmit={this.login}>
           <input type="email" required placeholder="Your Email" ref={(input) => this.email = input}/>
           <input type="password" required placeholder="Your Password" ref={(input) => this.password = input}/>
-          <button type="submit">Log In</button>
+          <div className="button--highlight">
+            <button type="submit">Log In</button>
+          </div>
           <div className="other-options"><a href="#" onClick={this.showCreateAccount}>Create Account</a></div>
           <p><a href="#" onClick={this.showPasswordReset}>Forgot Your Password?</a></p>
         </form>
@@ -136,7 +138,9 @@ class Members extends Component {
           <input type="email" name="email" required placeholder="Your Email" ref={(input) => this.email1 = input}/>
           <input type="password" name="password1" required placeholder="Your Password" ref={(input) => this.password1 = input}/>
           <input type="password" name="password2" required placeholder="Confirm Your Password" ref={(input) => this.password2 = input}/>
-          <button type="submit">Create Account</button>
+          <div className="button--highlight">
+            <button type="submit">Create Account</button>
+          </div>
           <div className="other-options"><a href="#" onClick={this.showLogin}>Already have an account? Log In</a></div>
           <p><a href="#" onClick={this.showPasswordReset}>Forgot Your Password?</a></p>
         </form>
@@ -150,7 +154,9 @@ class Members extends Component {
         <div className="message"></div>
         <form ref="login" onSubmit={this.resetPassword}>
           <input type="email" required placeholder="Your Email" ref={(input) => this.email2 = input}/>
-          <button type="submit">Send Password Reset</button>
+          <div className="button--highlight">
+            <button type="submit">Send Password Reset</button>
+          </div>
           <div className="other-options"><a href="#" onClick={this.showLogin}>Already have an account? Log In</a></div>
           <p><a href="#" onClick={this.showCreateAccount}>Create Account</a></p>
         </form>

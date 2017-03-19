@@ -4,7 +4,6 @@ class Item extends Component {
 	constructor(props) {
     super(props);
     this.state = {value: ''};
-
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -26,7 +25,7 @@ class Item extends Component {
     	  	<h3 className="item-name">{details.Description} <span className="item-size">{details.Size} for ${price.toFixed(2)}</span></h3>
     	  </div>
     	  <div className="item-order">
-    	  	<input type="number" defaultValue={order} step="1" min="0" ref="order" placeholder="0" onChange={(e) => this.handleChange(e, key)} />
+    	  	<input type="number" value={order} step="1" min="0" ref="order" placeholder="0" onChange={(e) => this.handleChange(e, key)} />
     	  </div>
     	  <div className="item-price">
     	  <span className="item-price-per">${pricePer.toFixed(2)}</span>
